@@ -27,18 +27,14 @@
 #   of the specified git repo, specify here the path of the directory
 #   relative to the repo root. Default undefined
 #
-# [*tag*]
-#   (Optional) - A specific tag you may want to deploy. Default undefined
-#   You can override the default value via command-line with:
-#   puppi deploy myapp -o "tag=release"
-#
 # [*branch*]
 #   (Optional) - A specific branch you may want to deploy. Default: master
 #   You can override the default value via command-line with:
 #   puppi deploy myapp -o "branch=devel"
 #
 # [*commit*]
-#   (Optional) - A specific commit you may want to use. Default undefined
+#   (Optional) - A specific commit or tag you may want to use. Default
+#   undefined
 #   You can override the default value via command-line with:
 #   puppi deploy myapp -o "commit=1061cb731bc75a1188b58b889b74ce1505ccb412"
 #
@@ -130,7 +126,6 @@ define puppi::project::git (
   $deploy_root,
   $install_git              = true,
   $git_subdir               = 'undefined',
-  $tag                      = 'undefined',
   $branch                   = 'master',
   $commit                   = 'undefined',
   $keep_gitdata             = true,
@@ -244,7 +239,7 @@ define puppi::project::git (
     puppi::deploy { "${name}-Deploy_Files":
       priority  => '40' ,
       command   => 'git.sh' ,
-      arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -gs ${git_subdir} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_gitdata}" ,
+      arguments => "-a deploy -s ${source} -d ${deploy_root} -u ${user} -gs ${git_subdir} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_gitdata}" ,
       user      => 'root' ,
       project   => $name ,
       enable    => $enable ,
@@ -345,7 +340,7 @@ define puppi::project::git (
     puppi::rollback { "${name}-Rollback_Files":
       priority  => '40' ,
       command   => 'git.sh' ,
-      arguments => "-a rollback -s ${source} -d ${deploy_root} -gs ${git_subdir} -t ${tag} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_gitdata}" ,
+      arguments => "-a rollback -s ${source} -d ${deploy_root} -gs ${git_subdir} -b ${branch} -c ${commit} -v ${bool_verbose} -k ${bool_keep_gitdata}" ,
       user      => $user ,
       project   => $name ,
       enable    => $enable ,
